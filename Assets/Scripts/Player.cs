@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     void Start()
     {
        velocidad = 3f;
-       fuerzaSalto = 500f;
+       fuerzaSalto = 350f;
        miTF = gameObject.transform;
        movimiento = miTF.position.x;
        miSR = gameObject.GetComponent<SpriteRenderer>();

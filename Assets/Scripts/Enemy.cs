@@ -4,38 +4,70 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] Transform Derecha;
-    [SerializeField] Transform Izquierda;
+    [SerializeField] Transform derecha;
+    [SerializeField] Transform izquierda;
+    [SerializeField] Transform player;
     Transform inicio;
     Transform final;
     Transform miTF;
     float velocidad;
     SpriteRenderer miSR;
+    Animator miAnim;
+    bool direccion;
     // Start is called before the first frame update
     void Start()
     {
-        miTF = GetComponent<Transform>();
-        miTF.position = Izquierda.position;
-        inicio = Izquierda;
-        final = Derecha;
-        velocidad = 0.1f;
+        miTF = gameObject.transform;
+        miSR = GetComponent<SpriteRenderer>();
+        miAnim = GetComponent<Animator>();
+        player = GameObject.Find("Player").GetComponent<Transform>();
+        miTF.position = izquierda.position;
+        inicio = izquierda;
+        final = derecha;
+        velocidad = 0.2f;
     }
 
     // Update is called once per frame
     void Update()
     {
         miTF.Translate((final.position-inicio.position)*velocidad*Time.deltaTime);
-        if(Vector3.Distance(miTF.position, Derecha.position)< 0.1f)
+        if(Vector3.Distance(miTF.position, derecha.position)< 0.2f)
         {
-            inicio = Derecha;
-            final = Izquierda;
-            miSR.flipX = true;
+            direccion = true;
         }
-        else if(Vector3.Distance(miTF.position, Izquierda.position) < 0.1f)
+        else if(Vector3.Distance(miTF.position, izquierda.position) < 0.2f)
         {
-            inicio = Izquierda;
-            final = Derecha;
-            miSR.flipX = false;
+            direccion = false;
+        }
+        if(direccion)
+        {
+            inicio = derecha;
+            final = izquierda;
+        }
+        else
+        {
+            inicio = izquierda;
+            final = derecha;
+        }
+        if(Vector3.Distance(miTF.position, player.position)<1f)
+        {
+            velocidad = 0;
+            miAnim.SetBool("Atacando", true);
+            if(miTF.position.x < player.position.x)
+            {
+                direccion = false;
+            }
+            else
+            {
+                direccion = true;
+            }
+            miSR.flipX = direccion;
+        }
+        else
+        {
+            miAnim.SetBool("Atacando", false);
+            velocidad = 0.2f;
+            miSR.flipX = direccion;
         }
     }
 }
